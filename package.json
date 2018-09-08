@@ -4,12 +4,16 @@
   "description": "github search feat hapi + react",
   "main": "index.js",
   "scripts": {
-    "start": "node ./api"
+    "start": "node ./api",
+    "lint": "./node_modules/.bin/eslint ./api"
   },
   "author": "cyablon",
   "license": "UNLICENSED",
   "dependencies": {
     "hapi": "^17.5.4",
     "joi": "^13.6.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.5.0"
   }
 }
