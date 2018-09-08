@@ -14,7 +14,7 @@ module.exports = {
         validate: {
           query: {
             q: Joi.string().required(),
-            sort: Joi.string().allow(['stars', 'forks', 'updated'])
+            sort: Joi.string().valid(['stars', 'forks', 'updated'])
           }
         }
       },

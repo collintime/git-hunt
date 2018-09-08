@@ -5,15 +5,18 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./api",
-    "lint": "./node_modules/.bin/eslint ./api"
+    "lint": "./node_modules/.bin/eslint ./api",
+    "test": "npm run lint && tap api/spec/*.spec.js"
   },
   "author": "cyablon",
   "license": "UNLICENSED",
   "dependencies": {
+    "boom": "^7.2.0",
     "hapi": "^17.5.4",
     "joi": "^13.6.0"
   },
   "devDependencies": {
-    "eslint": "^5.5.0"
+    "eslint": "^5.5.0",
+    "tap": "^12.0.1"
   }
 }
