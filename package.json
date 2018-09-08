@@ -4,11 +4,12 @@
   "description": "github search feat hapi + react",
   "main": "index.js",
   "scripts": {
-    "start": "node ."
+    "start": "node ./api"
   },
   "author": "cyablon",
   "license": "UNLICENSED",
   "dependencies": {
-    "hapi": "^17.5.4"
+    "hapi": "^17.5.4",
+    "joi": "^13.6.0"
   }
 }

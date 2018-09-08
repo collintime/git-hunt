@@ -9,12 +9,12 @@ const server = Hapi.server({
 
 async function start() {
 
-    // await server.register({
-    //     plugin: require('./github-plugin'),
-    //     options: {
-    //         message: 'hello'
-    //     }
-    // })
+    await server.register({
+        plugin: require('./github-search'),
+        options: {
+            message: 'hello'
+        }
+    })
 
     try {
         await server.start()
