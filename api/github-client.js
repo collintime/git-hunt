@@ -4,7 +4,7 @@ const Got = require('got')
 const Hoek = require('hoek')
 
 module.exports = {
-  create: (config) => {
+  create: (config = {}) => {
 
     const _url = 'https://api.github.com/search'
     const gotOptions = Hoek.applyToDefaults({
@@ -15,12 +15,12 @@ module.exports = {
     return {
       async searchRepositories(search, options = {}) {
 
-        let url = `${_url}/repositories?q=${search.query}`
+        let url = `${_url}/repositories?q=${search.q}`
         // score (relevance) is default unless sort provided
         if (search.sort) {
           url = `${url}&sort=${search.sort}`
         }
-        return Got.get(url, Hoek.applyToDefaults(options, gotOptions))
+        return Got.get(url, Hoek.applyToDefaults(gotOptions, options))
       }    
     }
   }

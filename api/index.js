@@ -10,7 +10,7 @@ const server = Hapi.server({
 async function start() {
 
   await server.register({
-    plugin: require('./github-search'),
+    plugin: require('./github-search-plugin'),
     options: {
       message: 'hello'
     }

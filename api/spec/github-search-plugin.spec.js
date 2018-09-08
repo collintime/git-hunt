@@ -3,10 +3,12 @@
 const Tap = require('tap')
 const Hapi = require('hapi')
 const Boom = require('boom')
+const Nock = require('nock')
+const SearchResult = require('./search-result.json')
 
 const internals = {
   createServer: async () => {
-    
+
     const server = Hapi.server({
       host: 'localhost',
       port: 8000,
@@ -19,11 +21,11 @@ const internals = {
         }
       }
     })
-  
+
     await server.register({
       plugin: require('../github-search-plugin')
     })
-  
+
     await server.start()
     return server
   }
@@ -39,9 +41,21 @@ Tap.test('plugin installation', async test => {
 
 Tap.test('repository route valid request', async test => {
 
+  Nock('https://api.github.com/search')
+    .get('/repositories?q=doggos')
+    .reply(200, SearchResult)
+
   const server = await internals.createServer()
-  let response = await server.inject({ url: '/repositories/search?q=whatever&sort=stars' })
-  test.same(response.result, 'stars', 'it should return an array')
+  let response = await server.inject({ url: '/repositories/search?q=doggos' })
+  test.same(response.result, [{
+    description: 'Training materials for O\'Reilly',
+    language: 'JavaScript',
+    name: 'doggos',
+    owner: {
+      login: 'spruke'
+    },
+    stars: 12
+  }], 'it should return an array')
   await server.stop()
   test.end()
 })
@@ -60,7 +74,7 @@ Tap.test('repository route invalid requests', async test => {
   }]
   const server = await internals.createServer()
 
-  for(let {url, message} of invalids) {
+  for (let { url, message } of invalids) {
     let response = await server.inject({ url })
     test.same(response.statusCode, 400, `${url}: should return a 400 code`)
     test.same(response.result.message, message, `${url} should return a helpful error`)
