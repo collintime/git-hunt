@@ -4,7 +4,12 @@ const Hapi = require('hapi')
 
 const server = Hapi.server({
   host: 'localhost',
-  port: 8000
+  port: 8000,
+  cache: [{
+    name: 'githubCache',
+    engine: require('catbox-memory'),
+    partition: 'repositories'
+  }]
 })
 
 async function start() {

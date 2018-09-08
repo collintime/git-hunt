@@ -19,6 +19,11 @@ const internals = {
             return Boom.badRequest(err)
           }
         }
+      },
+      cache: {
+        name: 'githubCache',
+        engine: require('catbox-memory'),
+        partition: 'repositories'
       }
     })
 

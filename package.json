@@ -12,6 +12,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "boom": "^7.2.0",
+    "catbox-memory": "^3.1.2",
     "got": "^9.2.1",
     "hapi": "^17.5.4",
     "joi": "^13.6.0",

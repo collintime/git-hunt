@@ -21,7 +21,7 @@ module.exports = {
           url = `${url}&sort=${search.sort}`
         }
         return Got.get(url, Hoek.applyToDefaults(gotOptions, options))
-      }    
+      }
     }
   }
 }
