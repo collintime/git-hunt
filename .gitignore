@@ -1,3 +1,7 @@
+#Hax
+api/node_modules
+ui/node_modules
+
 # Logs
 logs
 *.log
