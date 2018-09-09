@@ -3,116 +3,85 @@ import { hot } from 'react-hot-loader'
 import './App.css'
 import ky from 'ky';
 
-class App extends Component {
+class SearchForm extends Component {
 
-  constructor() {
-    super()
+  constructor(props) {
+
+    super(props)
     this.state = {
-      query: '',
-      repositories: [],
       page: 1,
-      searchComplete: false,
-      total: 0,
-      sort: null
+      // defaults to relevance
+      sort: null,
+      query: ''
     }
-  }
-
-  handleClick (e) {
-
-    e.preventDefault()
-    ky.get('/repositories/search?q=doggos')
-      .then(response => response.json())
-      .then(json => {
-
-        this.setState({ repositories: json })
-      })
-  }
-
-  handleChange(e) {
-
-    this.setState({ ...this.state, query: e.target.value});
-  }
-
-  searchRepositories () {
-
-    let url = `/repositories/search?q=${encodeURI(this.state.query)}&page=${this.state.page}`
-    if (this.state.sort) {
-      url = `${url}&sort=${this.state.sort}`
-    }
-    ky.get(url)
-      .then(response => response.json())
-      .then(result => {
-
-        this.setState({ ...this.state, repositories: result.repositories, count: result.repositories.length, searchComplete: true, total: result.total })
-      })
   }
 
   handleSubmit(e) {
 
     e.preventDefault()
     this.state.page = 1
-    this.searchRepositories()
+    this.props.search(this.state)
   }
 
-  nextPage() {
-
-    ++this.state.page
-    this.searchRepositories()
-  }
-
-  previousPage () {
-
-    --this.state.page
-    this.searchRepositories()
-  }
-
-  requestPage (num) {
-
-    this.state.page += num
-    this.searchRepositories()
-  }
-
-  getHeader () {
-    
-    if (this.state.searchComplete) {
-      return this.state.repositories.length ? `Displaying ${this.state.repositories.length} of ${this.state.total} Results` : 'No results found. Try again?'
-    }
-  }
-
-  sortByStars (e) {
+  updateSort(e) {
 
     this.state.sort = this.state.sort === 'stars' ? null : 'stars'
+  }
+
+  requestPage(e, num) {
+
+    e.preventDefault()
+    this.state.page += num
+    this.props.search(this.state)
+  }
+
+  handleChange(e) {
+
+    this.setState({ ...this.state, query: e.target.value });
   }
 
   render() {
 
     return (
-      <div className="App">
-        <h1> Github Repository Search </h1>
-        
-        <form onSubmit={e => this.handleSubmit(e)}>
-          <label>
-            <input type="text" value={this.state.query} onChange={e => this.handleChange(e)} />
-          </label>
-          <input type="submit" value="Submit" />
-          
-          <label>
-            Sort by Stars
-            <input type="checkbox" onChange={e => this.sortByStars(e)} />
-          </label>
-        </form>
+      <form onSubmit={e => this.handleSubmit(e)}>
+        <label>
+          <input type="text" value={this.state.query} onChange={e => this.handleChange(e)} />
+        </label>
+        <input type="submit" value="Search" />
 
+        <label>
+            <input type="checkbox" onChange={e => this.updateSort(e)} />
+            by Stars
+        </label>
+
+        { this.props.displayNext ? <button onClick={e => this.requestPage(e, 1)}>Next Page</button> : null }
+        { this.state.page > 1 ? <button onClick={e => this.requestPage(e, -1)}>Previous Page</button> : null }
+      </form>
+    )
+  }
+}
+
+class SearchResults extends Component {
+
+  constructor(props) {
+
+    super(props)
+  }
+
+  getHeader() {
+
+    if (this.props.items) {
+      return this.props.items.length ? `Displaying ${this.props.items.length} of ${this.props.total} Results` : 'No results found. Try again?'
+    }
+  }
+
+  render() {
+    
+    return (
+      <div>
         <h1>{this.getHeader()}</h1>
-        {
-          ((this.state.repositories.length < this.state.total && this.state.page > 1) ? <button onClick={e => this.requestPage(-1)}>Previous Page</button> : null )
-        }
-
-        {
-          (this.state.repositories.length && this.state.total > 30) ? <button onClick={e => this.requestPage(1)}>Next Page</button> : null
-        }
-        
         <ul>
-          {this.state.repositories.map(r =>
+          {this.props.items && this.props.items.map(r =>
             <li key={r.id}>
               <h3><a href={`https://github.com/${r.owner.login}/${r.name}`} target='_blank'>{r.name}</a></h3>
               <p>{r.description}</p>
@@ -122,6 +91,49 @@ class App extends Component {
             </li>
           )}
         </ul>
+      </div>
+    )
+  }
+}
+
+
+class App extends Component {
+
+  constructor() {
+    super()
+    this.state = {
+      repositories: null,
+      total: 0
+    }
+  }
+
+  searchRepositories(search) {
+
+    let url = `/repositories/search?q=${encodeURI(search.query)}&page=${search.page}`
+    if (search.sort) {
+      url = `${url}&sort=${search.sort}`
+    }
+    ky.get(url)
+      .then(response => response.json())
+      .then(result => {
+
+        this.setState(result)
+      })
+  }
+
+  render() {
+
+    return (
+      <div className="App">
+        <h1> Github Repository Search </h1>
+        <SearchForm
+          search={s => this.searchRepositories(s)}
+          displayNext={this.state.total > 30}
+        />
+        <SearchResults
+          items={this.state.repositories}
+          total={this.state.total}
+        />
       </div>
     )
   }
