@@ -28,7 +28,7 @@ const internals = {
     })
 
     await server.register({
-      plugin: require('../github-search-plugin')
+      plugin: require('../src/github-search-plugin')
     })
 
     await server.start()
@@ -47,12 +47,13 @@ Tap.test('plugin installation', async test => {
 Tap.test('repository route valid request', async test => {
 
   Nock('https://api.github.com/search')
-    .get('/repositories?q=doggos')
+    .get('/repositories?q=doggos&page=1')
     .reply(200, SearchResult)
 
   const server = await internals.createServer()
   let response = await server.inject({ url: '/repositories/search?q=doggos' })
-  test.same(response.result, [{
+  test.same(response.result, { total: 1, repositories: [{
+    id: 109208811,
     description: 'Training materials for O\'Reilly',
     language: 'JavaScript',
     name: 'doggos',
@@ -60,7 +61,7 @@ Tap.test('repository route valid request', async test => {
       login: 'spruke'
     },
     stars: 12
-  }], 'it should return an array')
+  }]}, 'it should return an array')
   await server.stop()
   test.end()
 })

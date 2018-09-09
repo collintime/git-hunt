@@ -4,9 +4,10 @@
   "description": "github search feat hapi + react",
   "main": "index.js",
   "scripts": {
-    "start": "node ./api",
-    "lint": "./node_modules/.bin/eslint ./api",
-    "test": "npm run lint && tap api/spec/*.spec.js"
+    "start": "node .",
+    "lint": "./node_modules/.bin/eslint index.js ./src ./spec",
+    "tap": "tap ./spec/*.spec.js",
+    "test": "npm run lint && npm run tap"
   },
   "author": "cyablon",
   "license": "UNLICENSED",
@@ -15,6 +16,7 @@
     "catbox-memory": "^3.1.2",
     "got": "^9.2.1",
     "hapi": "^17.5.4",
+    "inert": "^5.1.0",
     "joi": "^13.6.0",
     "nock": "^9.6.1"
   },

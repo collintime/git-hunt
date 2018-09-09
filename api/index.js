@@ -1,5 +1,6 @@
 'use strict'
 
+const Path = require('path')
 const Hapi = require('hapi')
 
 const server = Hapi.server({
@@ -9,17 +10,24 @@ const server = Hapi.server({
     name: 'githubCache',
     engine: require('catbox-memory'),
     partition: 'repositories'
-  }]
+  }],
+  routes: {
+    files: {
+      relativeTo: Path.join(__dirname, '../ui')
+    }
+  }
 })
 
 async function start() {
 
-  await server.register({
-    plugin: require('./github-search-plugin'),
+  await server.register([{
+    plugin: require('./src/github-search-plugin'),
     options: {
       message: 'hello'
     }
-  })
+  },
+  require('inert')
+  ])
 
   /* eslint-disable no-console */
   try {

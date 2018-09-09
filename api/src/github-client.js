@@ -20,6 +20,7 @@ module.exports = {
         if (search.sort) {
           url = `${url}&sort=${search.sort}`
         }
+        url = `${url}&page=${search.page || 1}`
         return Got.get(url, Hoek.applyToDefaults(gotOptions, options))
       }
     }
