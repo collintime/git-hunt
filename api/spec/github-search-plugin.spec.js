@@ -5,6 +5,7 @@ const Hapi = require('hapi')
 const Boom = require('boom')
 const Nock = require('nock')
 const SearchResult = require('./search-result.json')
+const Config = require('../config.json')
 
 const internals = {
   createServer: async () => {
@@ -28,7 +29,8 @@ const internals = {
     })
 
     await server.register({
-      plugin: require('../src/github-search-plugin')
+      plugin: require('../src/github-search-plugin'),
+      options: Config
     })
 
     await server.start()
