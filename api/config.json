@@ -1,0 +1,5 @@
+{
+  "filesRelativeTo": "../ui",
+  "host": "localhost",
+  "port": 8000
+}

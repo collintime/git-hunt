@@ -2,10 +2,11 @@
 
 const Path = require('path')
 const Hapi = require('hapi')
+const Config = require('./config.json')
 
 const server = Hapi.server({
-  host: 'localhost',
-  port: 8000,
+  host: Config.host,
+  port: Config.port,
   cache: [{
     name: 'githubCache',
     engine: require('catbox-memory'),
@@ -13,7 +14,7 @@ const server = Hapi.server({
   }],
   routes: {
     files: {
-      relativeTo: Path.join(__dirname, '../ui')
+      relativeTo: Path.join(__dirname, Config.filesRelativeTo)
     }
   }
 })
@@ -21,10 +22,7 @@ const server = Hapi.server({
 async function start() {
 
   await server.register([{
-    plugin: require('./src/github-search-plugin'),
-    options: {
-      message: 'hello'
-    }
+    plugin: require('./src/github-search-plugin')
   },
   require('inert')
   ])

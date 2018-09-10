@@ -47,7 +47,7 @@ module.exports = {
 
     server.route({
       method: 'GET',
-      path: '/index.html',
+      path: '/',
       handler: async (request, h) => {
 
         return h.file('public/index.html', { confine: false })
