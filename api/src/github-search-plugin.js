@@ -2,11 +2,12 @@
 
 const Joi = require('joi')
 const GithubRepository = require('./github-repository')
+const Boom = require('boom')
 
 module.exports = {
   name: 'github-search',
   version: '0.0.1',
-  register: async function (server) {
+  register: async function (server, options) {
 
     const repo = GithubRepository.create()
 
@@ -18,8 +19,8 @@ module.exports = {
     server.method('searchRepositories', searchRepositories, {
       cache: {
         cache: 'githubCache',
-        expiresIn: 10 * 1000,
-        generateTimeout: 2000
+        expiresIn: options.searchResultsTtl,
+        generateTimeout: options.searchResultsTimeout
       },
       generateKey: (search) => {
         
@@ -40,8 +41,17 @@ module.exports = {
         }
       },
       handler: async function(request) {
-        
-        return await server.methods.searchRepositories(request.query)
+
+        try {
+          return await server.methods.searchRepositories(request.query)
+        }
+        catch (err) {
+          // github returns 403 for rate limited
+          if (err.statusCode === 403) {
+            throw Boom.tooManyRequests()
+          }
+          throw err
+        }
       }
     })
 

@@ -102,8 +102,11 @@ class App extends Component {
   constructor() {
     super()
     this.state = {
-      repositories: null,
-      total: 0
+      result: {
+        repositories: null,
+        total: 0
+      },
+      error: null
     }
   }
 
@@ -116,8 +119,12 @@ class App extends Component {
     ky.get(url)
       .then(response => response.json())
       .then(result => {
-
-        this.setState(result)
+        
+        this.setState({result})
+      })
+      .catch(err => {
+        
+        this.setState({result: { error: 'Unexpected Error' }})
       })
   }
 
@@ -126,13 +133,14 @@ class App extends Component {
     return (
       <div className="App">
         <h1> Github Repository Search </h1>
+        <p className='error'>{this.state.result.error}</p>
         <SearchForm
           search={s => this.searchRepositories(s)}
-          displayNext={this.state.total > 30}
+          displayNext={this.state.result.total > 30}
         />
         <SearchResults
-          items={this.state.repositories}
-          total={this.state.total}
+          items={this.state.result.repositories}
+          total={this.state.result.total}
         />
       </div>
     )

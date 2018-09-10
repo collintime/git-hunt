@@ -1,5 +1,7 @@
 {
   "filesRelativeTo": "../ui",
   "host": "localhost",
-  "port": 8000
+  "port": 8000,
+  "searchResultsTtl": 120000,
+  "searchResultsTimeout": 2000
 }

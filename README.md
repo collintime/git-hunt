@@ -20,6 +20,16 @@ This repository contains two apps with independent `package.json` files. Once th
 | `GET` | 8000 | `/index.js` | `index.js` bundled file |
 | `GET` | 8000 | `/repositories/search?q={query}&sort={sort}&page={page}` | `{ total, repositories }` |
 
+## api config.json
+
+| name | use |
+| ---- | --- |
+| filesRelativeTo | static files served relative to this path |
+| host | api hostname |
+| port | api port |
+| searchResultsTtl | github search results cached duration in millisconds |
+| searchResultsTimeout | github search timeout in milliseconds (cached results returned if available) |
+
 # next steps
 - ui tests
 - make ui pretty

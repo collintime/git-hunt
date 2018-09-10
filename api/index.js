@@ -22,7 +22,8 @@ const server = Hapi.server({
 async function start() {
 
   await server.register([{
-    plugin: require('./src/github-search-plugin')
+    plugin: require('./src/github-search-plugin'),
+    options: Config
   },
   require('inert')
   ])
